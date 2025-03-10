@@ -1,0 +1,73 @@
+iptables 配置
+前置工作准备
+1、切换到 sa_cluster 用户
+sudo su - sa_cluser
+
+2、copy 上传的三个文件到 /home/sa_cluster 路径下，文件属组调整为 sa_cluster:sa_group
+
+3、进入 /home/sa_cluster 校验 iptables rpm 包
+wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/iptables-services-1.4.21-35.el7.x86_64.rpm
+MD5：b7ce9505d0bc06fb7efd43ff70778662      
+ 
+wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/iptables-1.4.21-35.el7.x86_64.rpm
+MD5：e3001c23d5039664c09ecdd64b08831b
+
+wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/change_iptables.sh
+
+4、设置文件属组
+sudo chown sa_cluster:sa_group /home/sa_cluster/iptables-services-1.4.21-35.el7.x86_64.rpm
+sudo chown sa_cluster:sa_group /home/sa_cluster/iptables-1.4.21-35.el7.x86_64.rpm
+sudo chown sa_cluster:sa_group /home/sa_cluster/change_iptables.sh
+配置 iptabels
+### 检查当前环境 customer_id 是否是 jisheng-cluster
+spadmin config get global -n customer_id
+
+### 检查当前是否有 iptables
+sudo iptables -nvL
+
+### 如果存在先备份规则(每个节点重复备份操作)
+cd /etc/sysconfig/
+sudo scp iptables iptables20250225.bak
+
+### 确认 customer_id 后执行脚本
+sh change_iptables.sh -y
+
+### 出现 【此操作需要谨慎小心,请输入环境的 customer_id:】 提示时，输入上一步获取的 customer_id。
+
+### 出现 【请输入「SOR-漏洞修复」工单号(仅数字)：】 提示时，请输入 35298
+
+### 出现 【是否需要对指定 ip 开放白名单[y/n?]:】 提示时，请输入 n
+
+### 出现 【输入对应的id,多个id之间请用 空格 隔开,输入 all 默认选择上列所有:】 提示时，请输入 all
+
+### 出现 【是否需要限制其他端口[y/n?]:】 提示时，请输入 y
+
+### 出现 请输入端口号或端口组,多个端口号请用 英文逗号 隔开,端口组需要用 英文冒号 表示范围,例如: 456,3389,8080:8090
+请输入：
+2379,2380,7180,7182,7185,8050,8051,8060,8061,8091,8101,8103,8105,8108,8110,8113,8114,8117,8124,8180,8310,8311,8312,8313,8314,8315,8316,8317,8318,8329,8332,8369,8370,8371,9000,9050,9393,9522,9994,9995,9996,9997,10101,11703,12108,12121,12325,13703,13873,14157,15599,15628,17019,17771,17891,18299,19813,20831,21061,21112,21515,21669,21671,22202,22685,23021,23461,24042,24274,24382,24410,24545,25000,25010,25020,25396,27319,28429,28770,29251,29365,31588,31839,32191,32429,33126,34671,34750,36067,36097,36157,36938,37167,37224,37340,8125
+### 出现 【2025-02-25 操作了 SOR-35298 工单,开启了 iptables!】 时，说明更新成功
+操作后检查
+# 查看 iptables 规则
+sudo cat /etc/sysconfig/iptables
+ 
+sudo iptables -nvL
+ntp 问题配置
+备份 ntp 配置
+sudo cp /etc/ntp.conf /etc/ntp.conf.bk-20250225
+修改 ntp 配置
+sudo vim /etc/ntp.conf
+# /etc/ntp.conf 追加如下内容
+restrict :: default nomodify notrap noquery
+restrict default nomodify notrap noquery
+disable monitor
+ 
+# 重启ntp服务
+systemctl restart ntpd
+验证
+
+# 查看 timedatectl 状态，确保 NTP synchronized: yes, 重启服务后这个状态存在延迟，等待 1 分钟左右查询
+sudo -i 
+timedatectl status
+
+# 查看是否关闭mode 6,Request timed out则表示已关闭mode 6
+ntpq -pn  xxx(服务器内网ip)
