@@ -1,0 +1,47 @@
+### data_loader 延迟排查步骤
+
+以下是 `data_loader` 延迟问题的排查步骤：
+
+1. **确认环境及版本信息**
+   - 查看 `customer_id`：`spadmin config get global -n customer_id`
+   - 查看版本信息：`spadmin upgrader version` [^3]。
+
+2. **查看 `data_loader` 状态**
+   - 部署了 SDF：`spadmin status -m data_loader -p sdf`
+   - 未部署 SDF：`spadmin status -m batch_loader -p sp` [^3]。
+
+3. **查看入库模式**
+   - 部署了 SDF：`spadmin config get server -m data_loader -p sdf`
+   - 未部署 SDF：`spadmin config get server -m batch_loader -p sp` [^3]。
+
+4. **查看数据延迟情况**
+   - SDF 2.2 以下：使用脚本 `sp_getlag.py`
+   - SDF 2.2+ 或 2.3+：使用命令 `smadmin latency get -m data_loader` [^3]。
+
+5. **检查 YARN 相关情况**
+   - 列出所有应用程序：`yarn application -list`
+   - 过滤 `sa_cluster` 相关应用：`grep sa_cluster`
+   - 查看最新 20 个应用：`yarn application -appStates ALL -list 2>/dev/null | grep -i kuduto | sort -t '_' -k2,2 -k3,3 -n | tail -n 20` [^10]。
+        `yarn application -appStates ALL -list 2>/dev/null | grep stream     | sort -t '_' -k2,2 -k3,3 -n | tail -n 20 `
+   - batch模式，列出所有状态的应用程序，按照时间进行排序，取最新的 20 个
+      `yarn application -appStates ALL -list 2>/dev/null | grep batch      | sort -t '_' -k2,2 -k3,3 -n | tail -n 20`
+
+6. **查看报警信息**
+   - 查看大盘监控：`https://overview.sensorsdata.cn/`
+   - 查看报警列表：`spadmin alarm list -p sdf` [^9]。
+
+7. **检查进程及依赖服务状态**
+   - 确认 `master`、`pm`、`maintenance`、`k2p`、`kc` 等进程是否存活。
+   - 检查依赖服务：`skv`、`kudu`、`impala`、`hdfs`、`yarn`、`mysql` [^9]。
+
+8. **查看日志**
+   - 使用 `sdftools` 脚本自动排查 `data_loader` 日志（SDF 2.2 以上支持） [^10]。
+   - 查看 `yarn` 日志：`yarn logs -applicationId application_xxxx_xxx > /tmp/application_xxxx_xxx` [^9]。
+
+9. **调整配置**
+   - 若 `kudu` 表频繁满，可增加容量（如从 1000W 调整到 3000W） [^1]。
+   - 切换为 `batch` 模式，观察延迟情况 [^1]。
+
+10. **重启服务**
+   - 重启 `data_loader`：`spadmin restart -m data_loader -p sdf` [^1]。
+
