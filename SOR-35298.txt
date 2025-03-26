@@ -6,13 +6,14 @@ sudo su - sa_cluser
 2、copy 上传的三个文件到 /home/sa_cluster 路径下，文件属组调整为 sa_cluster:sa_group
 
 3、进入 /home/sa_cluster 校验 iptables rpm 包
-wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/iptables-services-1.4.21-35.el7.x86_64.rpm
-MD5：b7ce9505d0bc06fb7efd43ff70778662      
+wget http://update.sensorsdata.cn/specialfile/iptables-services-1.4.21-35.el7.x86_64.rpm
+MD5：b7ce9505d0bc06fb7efd43ff70778662        
  
-wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/iptables-1.4.21-35.el7.x86_64.rpm
+wget http://update.sensorsdata.cn/specialfile/iptables-1.4.21-35.el7.x86_64.rpm
 MD5：e3001c23d5039664c09ecdd64b08831b
 
-wget --http-user=pandag --http-passwd=z5lZiumYp http://ufile.vip.sensorsdata.cn/dl/change_iptables.sh
+
+wget http://update.sensorsdata.cn/specialfile/change_iptables.sh
 
 4、设置文件属组
 sudo chown sa_cluster:sa_group /home/sa_cluster/iptables-services-1.4.21-35.el7.x86_64.rpm
