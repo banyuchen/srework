@@ -1,0 +1,10 @@
+### 解绑
+sbpadmin project dissociate -p default -a
+sbpadmin project dissociate -p test -i SA-DFEERAV1412,SF-SSDJF123512
+
+
+### 绑定
+#### 自动绑定
+sbpadmin project auto_associate
+#### 手动绑定
+sbpadmin project associate -p default -i SA-DFEERAV1412
