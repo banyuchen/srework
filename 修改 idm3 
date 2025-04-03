@@ -1,3 +1,6 @@
+参考文档：
+https://doc.sensorsdata.cn/pages/viewpage.action?pageId=545726584
+
 dev 项目：https://jira.sensorsdata.cn/browse/SCB-286514
 
 SELECT * FROM sbp_project WHERE name = 'default' limit 1;  7
@@ -8,17 +11,6 @@ SELECT name, type, priority FROM infinity_business_id_priority_config WHERE proj
 SELECT name, type, priority FROM infinity_business_id_priority_config WHERE project_id = 7 ORDER BY priority;
 
 
-
-
-# 将优先级大于等于41的用户标识，优先级统一都加 1, 空出优先级等于 41 的位置
-UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 3 AND priority >= 41;
-
-# 添加 【鸿蒙UUID】，优先级设置为 41
-INSERT INTO
-    infinity_business_id_priority_config
-(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
-VALUES
-(3, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 41, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
 
 项目 4
 $identity_cookie_id 优先级为 40， $identity_mp_id 优先级为 41
