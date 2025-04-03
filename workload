@@ -55,8 +55,8 @@ for i in hybrid0{1..3};do echo $i && ssh $i cat /sensorsdata/main/logs/sp/nginx/
        ,entity_id                                                               AS 'id'
        --- ,sql
 FROM default.workload_query
-WHERE start_time between '2025-03-25 02:00:00' AND '2025-03-25 04:00:00'  AND per_node_peak_memory is not null
-order by per_node_peak_memory desc limit 10;
+WHERE start_time between '2025-04-01 12:40:00' AND '2025-04-01 13:00:00'  AND per_node_peak_memory is not null
+order by total_cpu_time desc limit 10;
 
 
 

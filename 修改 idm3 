@@ -1,0 +1,95 @@
+dev 项目：https://jira.sensorsdata.cn/browse/SCB-286514
+
+SELECT * FROM sbp_project WHERE name = 'default' limit 1;  7
+SELECT * FROM sbp_project WHERE name = 'duigong' limit 1;  4
+
+
+SELECT name, type, priority FROM infinity_business_id_priority_config WHERE project_id = 4 ORDER BY priority;
+SELECT name, type, priority FROM infinity_business_id_priority_config WHERE project_id = 7 ORDER BY priority;
+
+
+
+
+# 将优先级大于等于41的用户标识，优先级统一都加 1, 空出优先级等于 41 的位置
+UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 3 AND priority >= 41;
+
+# 添加 【鸿蒙UUID】，优先级设置为 41
+INSERT INTO
+    infinity_business_id_priority_config
+(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
+VALUES
+(3, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 41, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
+
+项目 4
+$identity_cookie_id 优先级为 40， $identity_mp_id 优先级为 41
+项目 7
+$identity_cookie_id 优先级为 39， $identity_mp_id 优先级为 40
+
+项目 4
+# 将优先级大于等于41的用户标识，优先级统一都加 1, 空出优先级等于 41 的位置
+UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 4 AND priority >= 41;
+
+# 添加 【鸿蒙UUID】，优先级设置为 41
+INSERT INTO
+    infinity_business_id_priority_config
+(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
+VALUES
+(4, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 41, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
+
+
+项目7：
+# 将优先级大于等于40的用户标识，优先级统一都加 1, 空出优先级等于 40 的位置
+UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 7 AND priority >= 40;
+
+# 添加 【鸿蒙UUID】，优先级设置为 40
+INSERT INTO
+    infinity_business_id_priority_config
+(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
+VALUES
+(7, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 40, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
+
+aradmin restart -p sdf -m worker
+
+
+
+
+uat 环境： https://jira.sensorsdata.cn/browse/SCB-286513
+aradmin config get client -m mysql -p sbp_project
+{OA项目:production 企金项目:duigong }
+SELECT * FROM sbp_project WHERE name = 'production' limit 1;  2
+SELECT * FROM sbp_project WHERE name = 'duigong' limit 1;  4
+
+SELECT name, type, priority FROM infinity_business_id_priority_config WHERE project_id = 2 ORDER BY priority;
+SELECT name, type, priority FROM infinity_business_id_priority_config WHERE project_id = 4 ORDER BY priority;
+
+项目 2
+$identity_cookie_id 优先级为 39 $identity_mp_id 优先级为 40
+项目 3
+$identity_cookie_id 优先级为 40 $identity_mp_id 优先级为 41
+
+
+项目 2
+# 将优先级大于等于 40 的用户标识，优先级统一都加 1, 空出优先级等于 40 的位置
+UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 2 AND priority >= 40;
+
+# 添加 【鸿蒙UUID】，优先级设置为 40
+INSERT INTO
+    infinity_business_id_priority_config
+(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
+VALUES
+(2, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 40, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
+
+
+项目 4
+# 将优先级大于等于41的用户标识，优先级统一都加 1, 空出优先级等于 41 的位置
+UPDATE infinity_business_id_priority_config SET priority = priority + 1 WHERE project_id = 4 AND priority >= 41;
+
+# 添加 【鸿蒙UUID】，优先级设置为 41
+INSERT INTO
+    infinity_business_id_priority_config
+(project_id, name, type, is_business_unique, priority, parent_type, child_type, track_period, is_many, config_info, track_info, enabled)
+VALUES
+(4, '鸿蒙 UUID', '$identity_harmony_uuid', 0, 41, '', '', 30, 1, '{"max_id_limit": 5, "overload_policy": "fifo"}', '', 1);
+
+
+aradmin restart -p sdf -m worker
