@@ -1,0 +1,56 @@
+3、进入 /home/sa_cluster 校验 iptables rpm 包
+wget http://update.sensorsdata.cn/specialfile/iptables-services-1.4.21-35.el7.x86_64.rpm
+MD5：b7ce9505d0bc06fb7efd43ff70778662        
+ 
+wget http://update.sensorsdata.cn/specialfile/iptables-1.4.21-35.el7.x86_64.rpm
+MD5：e3001c23d5039664c09ecdd64b08831b
+
+
+wget http://update.sensorsdata.cn/specialfile/change_iptables.sh
+
+
+### 检查当前环境 customer_id 是否是 jisheng-cluster
+spadmin config get global -n customer_id
+
+### 检查当前是否有 iptables
+sudo iptables -nvL
+
+### 如果存在先备份规则(每个节点重复备份操作)
+cd /etc/sysconfig/
+sudo scp iptables iptables20250422.bak
+
+### 确认 customer_id 后执行脚本
+sh change_iptables.sh -y
+
+
+
+
+spadmin stop -p sp -m redis
+
+
+wget http://download.sensorsdata.cn/resourcesfile/redis-6.2.17.tar
+tar -xf redis-6.2.17.tar
+sudo mv /sensorsdata/main/program/sp/redis/bin/redis-server /home/sa_cluster/redis-server
+sudo scp redis-6.2.17/redis-server /sensorsdata/main/program/sp/redis/bin/
+vim /sensorsdata/main/program/sp/redis/conf/redis_6178.conf
+
+
+chmod 600 /sensorsdata/main/program/sp/redis/conf/redis_6178.conf
+rm /sensorsdata/main/program/sp/redis/conf/redis.conf
+
+10.5.233.195 hybrid01.classic-ali-shanghai-01.loropiana.deploy.sensorsdata.cloud hybrid01
+10.5.233.202 hybrid02.classic-ali-shanghai-01.loropiana.deploy.sensorsdata.cloud hybrid02
+10.5.233.203 hybrid03.classic-ali-shanghai-01.loropiana.deploy.sensorsdata.cloud hybrid03
+
+
+rename-command FLUSHALL ""
+rename-command FLUSHDB  ""
+rename-command CONFIG   ""
+rename-command KEYS     ""
+rename-command SHUTDOWN ""
+
+/sensorsdata/main/program/sp/redis/bin/redis-cli -h 10.5.233.195 -p 6178 -a SensorsData2015
+
+
+aradmin maintenance -p edge -m edge --recover
+aradmin start -p edge -m edge

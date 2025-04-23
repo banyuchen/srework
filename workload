@@ -30,6 +30,24 @@ SELECT  query_id
        ,workload_source                                                         AS '来源'
        ,workload_query_desc                                                     AS '详细信息'  
        ---,sql
+FROM default.workload_query
+WHERE sql like "%3009008241843245%"
+order by per_node_peak_memory desc limit 10;
+
+SELECT  query_id
+       ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
+       ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
+       ,round(duration/1000,0)                                                  AS '总耗时(s)'
+       ,total_cpu_time AS CPU耗时ms
+       ,round((duration-admission_wait)/1000,0)                                 AS '运行时长(s)'
+       ,round(admission_wait/1000,0)                                            AS '排队时长(s)'
+       ,cast(round(per_node_peak_memory/ 1024 / 1024 / 1024) AS string)         AS '内存(GB)'
+       ,cast(round(estimated_per_node_peak_memory/ 1024 / 1024/1024) AS string) AS '预估内存(GB)'
+       ,query_state                                                             AS '查询状态'
+       ,functional_module                                                       AS '类型'
+       ,workload_source                                                         AS '来源'
+       ,workload_query_desc                                                     AS '详细信息'  
+       ---,sql
 FROM workload_query
 WHERE sql like "%ustomerid FROM horizon_production_2.events%"
 order by per_node_peak_memory desc limit 10;
