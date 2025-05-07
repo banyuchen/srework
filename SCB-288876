@@ -1,0 +1,29 @@
+127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1 localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.7.1.31 data01.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data01
+10.7.1.32 data02.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data02
+10.7.1.33 data03.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data03
+10.7.1.58 meta01.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud meta01
+10.7.1.59 meta02.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud meta02
+10.7.1.60 meta03.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud meta03
+10.7.1.86 data04.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data04
+10.7.1.87 data05.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data05
+10.7.1.88 data06.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data06
+10.7.1.89 data07.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data07
+10.7.1.90 data08.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data08
+10.7.1.91 data09.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data09
+10.7.1.92 data10.classic-physical-zhejiang-01.zyjk-xc-zs.deploy.sensorsdata.cloud data10
+
+
+hdfs /sensorsdata/main/logs/hadoop/hdfs/sa_cluster/hadoop-sa_cluster-datanode-data05.log
+
+kafka /sensorsdata/main/logs/kafka/kafka/sa_cluster/server.log
+
+kudu /sensorsdata/main/logs/soku/kudu/sa_cluster/tserver/kudu-tserver.data05.sa_cluster.log.INFO.20250506-191234.37674
+
+    /sensorsdata/main/logs/metadb/mariadb/sa_cluster/mysql.log
+
+skv_offline /sensorsdata/main/logs/skv/skv_offline/sa_cluster/meta_server/meta.log.20241109_010159_672
+yarn /sensorsdata/main/logs/hadoop/yarn/sa_cluster/hadoop-sa_cluster-historyserver-meta03.log 
+
+zk /sensorsdata/main/logs/kraken/zookeeper/sa_cluster/zookeeper-sa_cluster-server-meta03.log
