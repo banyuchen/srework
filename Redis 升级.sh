@@ -1,3 +1,4 @@
+https://doc.sensorsdata.cn/pages/viewpage.action?pageId=560373815
 spadmin stop -p sp -m redis
 
 cd /tmp/    

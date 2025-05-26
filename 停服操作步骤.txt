@@ -1,0 +1,72 @@
+巡检包：
+wget http://update.sensorsdata.cn/specialfile/allinone-sdk.tar.gz
+巡检：
+tar xf /sensorsdata/main/packages/allinone-sdk.tar.gz && cd /sensorsdata/main/packages/allinone-sdk
+python3 allinone.py
+
+# 查看业务组件启动情况
+aradmin status
+
+# 检查是否存在维护状态的组件
+aradmin captain list_maintained
+
+# 检查服务器的 ntp
+systemctl status ntpd || systemctl status chronyd
+systemctl status ntpd &>/dev/null && sudo systemctl enable ntpd || sudo systemctl enable chronyd
+
+# 关机机器备份
+mkdir -pv /home/sa_cluster/sensors_backup
+cp /etc/hosts /home/sa_cluster/sensors_backup/hosts_$(date +%F).conf
+cp /etc/fstab /home/sa_cluster/sensors_backup/fstab_$(date +%F).conf
+ 
+#关机前检查 iptables、firewalld 和 selinux的状态
+sudo systemctl status iptables.service
+sudo iptables-save > /home/sa_cluster/sensors_backup/iptables_$(date +%F).bak
+sudo iptables -vnL                  
+sudo systemctl status firewalld    ##正常应该是关闭状态 
+sudo getenforce                    ##正常情况是 Disabled
+
+# mothership获取默认账户的用户名密码(截图保存)
+mothershipadmin operation where_server >> /home/sa_cluster/sensors_backup/mothership_$(date +%F).conf 2>&1
+mothershipadmin user default >> /home/sa_cluster/sensors_backup/mothership_$(date +%F).conf 2>&1
+
+# 停当前节点的 web：        
+    for mod in sbp sps sa sdg blitzreport infinity-workload sbp-approval-workflow;do aradmin pause -m web -p $mod -r web -a `hostname -f` -d 86400;done
+    # for mod in sbp sps sa sdg blitzreport infinity-workload sbp-approval-workflow;do aradmin maintenance -m web -p $mod -r web -a `hostname -f`;done 
+ 
+# 停INFINITY组件（无 infinity 组件则不需要执行）：
+    for mod in ksyncer_kafka subscription_profile_stream subscription_sender subscription_stream infinity_server;do aradmin pause -m $mod -r $mod -p infinity -a `hostname -f` -d 86400;done
+    # for mod in ksyncer_kafka subscription_profile_stream subscription_sender subscription_stream infinity_server;do aradmin maintenance -m $mod -r $mod -p infinity -a `hostname -f`;done
+ 
+# 停当前节点的其他组件：        
+    aradmin pause -m cloudatlas -p sca -r cloudatlas -a `hostname -f` -d 86400
+    # aradmin maintenance -m cloudatlas -p sca -r cloudatlas -a `hostname -f`
+    aradmin pause -m ssdb -r persistence_master -p sp -a `hostname -f` -d 86400
+    # aradmin maintenance -m ssdb -r persistence_master -p sp -a `hostname -f`
+    aradmin pause -m ssdb -r persistence_slave -p sp -a `hostname -f` -d 86400
+    # aradmin maintenance -m ssdb -r persistence_slave -p sp -a `hostname -f`
+    aradmin pause -m redis -r cache_master -p sp -a `hostname -f` -d 86400
+    # aradmin maintenance -m redis -r cache_master -p sp -a `hostname -f`
+
+# 停止当前节点的大数据相关组件
+mothershipadmin stop -m kafka -r kafka_broker  --host `hostname -f`
+mothershipadmin stop -m kudu -r kudu_tserver --host `hostname -f`
+mothershipadmin stop -m kudu -r kudu_master --host `hostname -f`
+mothershipadmin stop -m kudu -r kudu_collector --host `hostname -f`
+mothershipadmin stop -m hdfs -r datanode --host `hostname -f`
+mothershipadmin stop -m hdfs -r namenode --host `hostname -f`
+mothershipadmin stop -m hdfs -r journalnode --host `hostname -f`
+mothershipadmin stop -m hdfs -r zkfc --host `hostname -f`
+mothershipadmin stop -m impala -r impala_catalog_service --host `hostname -f`
+mothershipadmin stop -m impala -r impala_daemon --host `hostname -f`
+mothershipadmin stop -m impala -r impala_state_store --host `hostname -f`
+mothershipadmin stop -m yarn -r nodemanager --host `hostname -f`
+mothershipadmin stop -m yarn -r resourcemanager --host `hostname -f`
+mothershipadmin stop -m yarn -r timelineserver --host `hostname -f`
+mothershipadmin stop -m yarn -r historyserver --host `hostname -f`
+mothershipadmin stop -m skv_offline -r replica_server --host `hostname -f`
+mothershipadmin stop -m skv_offline -r meta_server --host `hostname -f`
+mothershipadmin stop -m zookeeper -r zookeeper_server --host `hostname -f`
+
+
+sudo systemctl stop etcd

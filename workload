@@ -71,7 +71,7 @@ SELECT  query_id
        ,sub_category
 FROM workload_query
 WHERE user like '%admin%'
-and start_time between '2025-04-11 00:00:00' AND '2025-04-11 23:10:00'
+and start_time between '2025-05-19 17:29:00' AND '2025-05-19 17:40:00'
 order by per_node_peak_memory desc limit 10;
 
 
@@ -160,6 +160,7 @@ order by per_node_peak_memory desc limit 10;
 
 
 SELECT  query_id
+       ,project
        ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
        ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
        ,round(duration/1000,0)                                                  AS '总耗时(s)'
@@ -174,6 +175,6 @@ SELECT  query_id
        ,workload_query_desc                                                     AS '详细信息'  
        ---,sql
 FROM default.workload_query
-WHERE start_time between '2025-03-20 00:00:00' AND '2025-03-28 10:10:00'
-AND functional_module like '%概览%' and query_state='EXCEPTION'
+WHERE start_time between '2025-03-20 00:00:00' AND '2025-05-21 10:10:00'
+AND functional_module = '自定义接口查询' 
 order by per_node_peak_memory desc limit 10;

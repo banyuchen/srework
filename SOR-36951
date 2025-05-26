@@ -1,0 +1,21 @@
+# 查看基础信息
+spadmin config get global -n customer_id
+spadmin upgrader version
+
+# 查看都有哪些节点
+spadmin status -p sp -m nginx
+
+# 这3条，在每个节点都执行
+sudo systemctl status iptables
+sudo iptables -nvL
+sudo cat /etc/sysconfig/iptables
+
+
+### 放行
+-A INPUT -s 11.120.13.67 -p tcp --dport 8316  -j ACCEPT
+-A INPUT -s 11.120.13.67 -p udp --dport 8316  -j ACCEPT
+
+### 封禁
+-A INPUT -p tcp -m multiport --dports 8316 -m comment --comment "禁止外部访问自定义的相关端口" -j DROP
+
+

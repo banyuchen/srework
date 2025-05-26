@@ -1,0 +1,25 @@
+## 更新license
+### 确定 customer_id 是否为 shenwanhongyuan-cs
+su - sa_cluster
+spadmin config get global -n customer_id
+
+### 更新 license1.0
+sh License10_shenwanhongyuan-cs_20250521_092322.sh
+
+### 更新 license2.0
+sbpadmin license install -c License20_shenwanhongyuan-cs_20250521_092322.crt
+sbpadmin license update_cache
+
+## 创建项目
+sbpadmin project create -n swhyrc -c 申万宏源融成 -p PasswordTest123 
+
+
+
+关闭强校验：
+--disable-schema-limited
+开启多对一：
+scaadmin project update -n 项目英文名 --enable-new-signup
+重启导入
+spadmin restart -m extractor -p sdf 
+spadmin restart -m data_loader -p sdf 
+spadmin status -m all -p sdf 
