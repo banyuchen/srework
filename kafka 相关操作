@@ -1,1 +1,51 @@
 https://doc.sensorsdata.cn/display/~wangbo002/kafka
+
+
+### 手动订阅
+${SENSORS_PLATFORM_HOME}/sdp/1.0.0.0-123/kafka/bin/kafka-console-consumer.sh
+
+
+### 查看消费组
+./kafka-consumer-groups.sh --bootstrap-server data01:9092 --list
+
+### 查看对应 kafka 消费情况
+./kafka-consumer-groups.sh --bootstrap-server data01:9092 --describe --group cdfmemberDC
+
+### 查看神策 kafka 延迟情况
+./kafka-consumer-groups.sh --bootstrap-server data01:9092 --describe --group check_loader_latency
+
+
+
+### 查询 topic，进入 kafka 目录：
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+
+### 查询 topic 内容：
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topicName --from-beginning
+
+### 查看消息
+/sensorsdata/main/program/sp/sdp/current/kafka-broker/bin
+./kafka-console-consumer.sh --bootstrap-server 10.120.158.93:9092 --topic sf_msg_topic --from-beginning
+./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test1
+
+### 查看所有 topic	
+kafka-topics --zookeeper localhost:2181 --list
+
+### 查看所有消费组	
+cd /sensorsdata/main/program/sp/sdp/1.0.0.0-123/kafka/bin/
+bin/kafka-consumer-groups.sh --zookeeper 【zk的ip】:2181 --list
+### 删除 topic	
+kafka-topics --zookeeper localhost:2181 --delete  --topic (topic 名称)
+
+### 创建 topic 并指定 partition	
+kafka-topics --create --zookeeper localhost:2181 --topic sf_msg_topic --replication-factor 1 --partitions 1
+
+### 查看单个 topic	
+kafka-topics --zookeeper localhost:2181 --describe --topic sf_msg_topic
+
+### 查看消费者订阅的消息	
+kafka-console-consumer --bootstrap-server 10.120.38.234:9092 --topic infinity_subscription_stream（topic 名称）
+
+kafka-console-consumer --bootstrap-server data01:9092,data02:9092,data03:9092 --topic infinity_bridge_subscription_table_metadata_stream（topic 名称）
+
+关于消息积压	https://blog.csdn.net/weixin_35978903/article/details/113414175
