@@ -1,0 +1,36 @@
+1、itext涉及版权纠纷和投诉，使用Apache PDFBox替换。（请提供发布包及发布手册）
+
+2、监控服务启动：
+    spadmin start -m jobscheduler -p sps
+	spadmin start -m scheduler -p sp
+	spadmin start -m id_mapping_skv_proxy
+	spadmin start -m cloudatlas -p sca
+	spadmin start -m sp -m hue 
+	spadmin start -m sp -m skv_offline
+
+    spadmin captain list_stopped
+3、sp scheduler 组件任务调度，当前配置的 128M，出现 java.lang.OutOfMemoryError 
+    # 查询配置 （当前为 128）
+    spadmin config get server -m scheduler -p sp
+    # 修改配置 （调整为 1024）
+    spadmin config set server -m scheduler -p sp -n mem_mb -v 1024
+    # 查询配置
+    spadmin config get server -m scheduler -p sp
+    # 重启组件
+    spadmin restart -m scheduler -p sp
+
+4、kudu的tserver加回（9节点，当前少了08节点）
+    a、sensors08 节点执行
+            t_wal_dir=$(curl 127.0.0.1:8050/varz 2>/dev/null | grep fs_wal_dir= | awk -F'=' '{print $2}')
+            t_data_dirs=$(curl 127.0.0.1:8050/varz 2>/dev/null | grep fs_data_dirs= | awk -F'=' '{print $2}')
+    b、cdh 界面停止 sensor08 节点的 kudu tserver
+    c、sensors08 节点备份数据（先看磁盘空间是否足够）
+        sudo ls $t_wal_dir
+        sudo mv $t_wal_dir{,.bak$(date +%Y%m%d_%H%M)}
+        sudo ls $t_data_dirs
+        sudo mv $t_data_dirs{,.bak$(date +%Y%m%d_%H%M)}
+    d、cdh 界面拉起 sensors08 节点的 kudu
+    e、查看 ksck 是否 ok
+        sp_kudu cluster ksck  $(spadmin config get client -m kudu -n master_address -p sp -c |sed 's/"//g')
+    f、查看 sensors08 节点是否加入集群
+        sp_kudu tserver list  $(spadmin config get client -m kudu -n master_address -p sp -c |sed 's/"//g')

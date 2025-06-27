@@ -31,3 +31,26 @@ for i in data{01..10};do echo $i && ssh $i sudo cp /etc/sysconfig/iptables /home
 
 
 
+1、拿到客户环境 host
+cat /etc/hosts | awk '{print $3}' | grep -v "local" > host.txt
+
+2、分发脚本
+for i in `cat host.txt`; do scp update.sh $i:~/ ; done
+
+3、执行脚本
+for i in `cat host.txt`; do ssh $i "sh update.sh" ; done
+
+
+脚本
+### 先备份当前 iptables 文件
+sudo mv  /etc/sysconfig/iptables  /etc/sysconfig/iptables2024062601.bak
+### 当前规则装载到 iptables 里面
+sudo iptables-save >/etc/sysconfig/iptables
+### 把装载的 iptables 也备份一下
+sudo mv  /etc/sysconfig/iptables  /etc/sysconfig/iptables2024062602.bak
+### 复制 01 节点规则
+sudo scp hybrid01:/etc/sysconfig/iptables /etc/sysconfig/iptables
+### 重启 iptables
+sudo systemctl restart iptables
+### 查看 iptables 规则
+sudo iptables -nvL

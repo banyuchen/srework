@@ -8,3 +8,5 @@ sudo vim /etc/sysconfig/iptables
 sudo systemctl restart iptables
 sudo iptables -nvL
 
+
+sudo systemctl stop iptables
