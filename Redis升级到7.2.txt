@@ -1,0 +1,32 @@
+Redis升级到7.2.10
+
+### 停 Redis 服务
+#### sp2.0 
+sudo su sa_cluster
+spadmin stop -p sp -m redis
+#### sp2.1 
+sudo su sa_cluster
+aradmin stop -p sp -m redis
+
+### 替换 redis-server 
+备注：所有元数据节点都要替换
+cd /tmp/    
+wget http://update.sensorsdata.cn/security/redis-server
+sudo mv /sensorsdata/main/program/sp/redis/bin/redis-server /home/sa_cluster/redis-server
+cp /tmp/redis-server /sensorsdata/main/program/sp/redis/bin/
+添加执行权限: chmod +x /sensorsdata/main/program/sp/redis/bin/redis-server
+
+### 启动 Redis 服务
+#### sp 2.0:
+spadmin start -p sp -m redis
+ 
+#### sp2.1:
+aradmin start -p sp -m redis
+
+### 检查 Redis 服务状态
+注: server_ip 需要修改为实际的 redis 运行的 ip 地址
+#### 使用redis-cli连接redis server
+/sensorsdata/main/program/sp/redis/bin/redis-cli -h server_ip -p 6178 -a SensorsData2015
+#### 连接成功后输入info，查看redis_version字段显示是否为6.2.18
+info
+#### 观察日志 /sensorsdata/main/logs/sp/redis/redis_6178.log 文件看启动是否有问题

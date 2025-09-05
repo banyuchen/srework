@@ -24,6 +24,8 @@ bin/kafka-topics.sh --list --zookeeper localhost:2181
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topicName --from-beginning
 
 ### 查看消息
+/sensorsdata/main/program/kafka/kafka/kafka_broker/bin
+
 /sensorsdata/main/program/sp/sdp/current/kafka-broker/bin
 ./kafka-console-consumer.sh --bootstrap-server 10.120.158.93:9092 --topic sf_msg_topic --from-beginning
 ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test1
@@ -34,6 +36,9 @@ kafka-topics --zookeeper localhost:2181 --list
 ### 查看所有消费组	
 cd /sensorsdata/main/program/sp/sdp/1.0.0.0-123/kafka/bin/
 bin/kafka-consumer-groups.sh --zookeeper 【zk的ip】:2181 --list
+
+/sensorsdata/main/program/kafka/kafka/kafka_broker/bin
+
 ### 删除 topic	
 kafka-topics --zookeeper localhost:2181 --delete  --topic (topic 名称)
 

@@ -178,3 +178,83 @@ FROM default.workload_query
 WHERE start_time between '2025-03-20 00:00:00' AND '2025-05-21 10:10:00'
 AND functional_module = '自定义接口查询' 
 order by per_node_peak_memory desc limit 10;
+
+
+SELECT  query_id
+       ,project
+       ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
+       ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
+       ,round(duration/1000,0)                                                  AS '总耗时(s)'
+       ,total_cpu_time AS CPU耗时ms
+       ,round((duration-admission_wait)/1000,0)                                 AS '运行时长(s)'
+       ,round(admission_wait/1000,0)                                            AS '排队时长(s)'
+       ,cast(round(per_node_peak_memory/ 1024 / 1024 / 1024) AS string)         AS '内存(GB)'
+       ,cast(round(estimated_per_node_peak_memory/ 1024 / 1024/1024) AS string) AS '预估内存(GB)'
+       ,query_state                                                             AS '查询状态'
+       ,functional_module                                                       AS '类型'
+       ,workload_source                                                         AS '来源'
+       ,workload_query_desc                                                     AS '详细信息'  
+       ---,sql
+FROM workload_query
+WHERE sql like "%'2025-03-20 21:07:12.0' <= date AND date < '2025-03-21 07:46:33.6'%"
+
+
+SELECT  query_id
+       ,project
+       ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
+       ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
+       ,round(duration/1000,0)                                                  AS '总耗时(s)'
+       ,total_cpu_time AS CPU耗时ms
+       ,round((duration-admission_wait)/1000,0)                                 AS '运行时长(s)'
+       ,round(admission_wait/1000,0)                                            AS '排队时长(s)'
+       ,cast(round(per_node_peak_memory/ 1024 / 1024 / 1024) AS string)         AS '内存(GB)'
+       ,cast(round(estimated_per_node_peak_memory/ 1024 / 1024/1024) AS string) AS '预估内存(GB)'
+       ,query_state                                                             AS '查询状态'
+       ,functional_module                                                       AS '类型'
+       ,workload_source                                                         AS '来源'
+       ,workload_query_desc                                                     AS '详细信息'  
+       ---,sql
+FROM default.workload_query
+WHERE start_time between '2025-09-04 00:00:00' AND '2025-09-04 02:10:00'
+order by per_node_peak_memory desc limit 20;
+
+
+SELECT  query_id
+       ,project
+       ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
+       ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
+       ,round(duration/1000,0)                                                  AS '总耗时(s)'
+       ,total_cpu_time AS CPU耗时ms
+       ,round((duration-admission_wait)/1000,0)                                 AS '运行时长(s)'
+       ,round(admission_wait/1000,0)                                            AS '排队时长(s)'
+       ,cast(round(per_node_peak_memory/ 1024 / 1024 / 1024) AS string)         AS '内存(GB)'
+       ,cast(round(estimated_per_node_peak_memory/ 1024 / 1024/1024) AS string) AS '预估内存(GB)'
+       ,query_state                                                             AS '查询状态'
+       ,functional_module                                                       AS '类型'
+       ,workload_source                                                         AS '来源'
+       ,workload_query_desc                                                     AS '详细信息'  
+       ---,sql
+FROM default.workload_query
+WHERE sql like "%aggregate_track_statistic%" order by start_time desc limit 10;
+
+
+
+SELECT  query_id
+       ,project
+       ,to_timestamp(start_time,'yyyy-MM-dd HH:mm:ss')                          AS '开始时间'
+       ,to_timestamp(end_time,'yyyy-MM-dd HH:mm:ss')                            AS '结束时间'
+       ,round(duration/1000,0)                                                  AS '总耗时(s)'
+       ,total_cpu_time AS CPU耗时ms
+       ,round((duration-admission_wait)/1000,0)                                 AS '运行时长(s)'
+       ,round(admission_wait/1000,0)                                            AS '排队时长(s)'
+       ,cast(round(per_node_peak_memory/ 1024 / 1024 / 1024) AS string)         AS '内存(GB)'
+       ,cast(round(estimated_per_node_peak_memory/ 1024 / 1024/1024) AS string) AS '预估内存(GB)'
+       ,query_state                                                             AS '查询状态'
+       ,functional_module                                                       AS '类型'
+       ,workload_source                                                         AS '来源'
+       ,workload_query_desc                                                     AS '详细信息'  
+       ---,sql
+FROM default.workload_query
+WHERE start_time between '2025-03-20 00:00:00' AND '2025-09-03 10:10:00'
+AND functional_module like "%书签%"
+order by per_node_peak_memory desc limit 10;
